@@ -1,12 +1,12 @@
 {
   "$GMScript":"v1",
-  "%Name":"c_att_slash",
+  "%Name":"c_collision",
   "isCompatibility":false,
   "isDnD":false,
-  "name":"c_att_slash",
+  "name":"c_collision",
   "parent":{
-    "name":"att",
-    "path":"folders/Functions/att.yy",
+    "name":"Control",
+    "path":"folders/Functions/Control.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

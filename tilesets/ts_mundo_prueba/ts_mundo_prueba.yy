@@ -3,13 +3,16 @@
   "%Name":"ts_mundo_prueba",
   "autoTileSets":[],
   "macroPageTiles":{
-    "SerialiseHeight":9,
-    "SerialiseWidth":7,
-    "TileCompressedData":[-63,0,],
+    "SerialiseHeight":14,
+    "SerialiseWidth":18,
+    "TileCompressedData":[
+      -5,0,1,4,-4,6,1,8,-4,0,2,4,8,-6,0,1,28,-4,30,1,32,-4,0,3,28,32,0,-5,6,1,50,-4,30,1,58,-4,6,3,50,58,6,
+      -18,30,-180,0,
+    ],
     "TileDataFormat":1,
   },
   "name":"ts_mundo_prueba",
-  "out_columns":1,
+  "out_columns":30,
   "out_tilehborder":2,
   "out_tilevborder":2,
   "parent":{
@@ -19,8 +22,8 @@
   "resourceType":"GMTileSet",
   "resourceVersion":"2.0",
   "spriteId":{
-    "name":"s_solid",
-    "path":"sprites/s_solid/s_solid.yy",
+    "name":"s_tile_set",
+    "path":"sprites/s_tile_set/s_tile_set.yy",
   },
   "spriteNoExport":false,
   "textureGroupId":{
@@ -33,7 +36,7 @@
   "tilehsep":0,
   "tilevsep":0,
   "tileWidth":32,
-  "tilexoff":0,
-  "tileyoff":0,
-  "tile_count":1,
+  "tilexoff":16,
+  "tileyoff":16,
+  "tile_count":900,
 }

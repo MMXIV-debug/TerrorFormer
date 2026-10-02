@@ -19,6 +19,9 @@ is_on_floor = 0; // Variable de control de si esta en el suelo
 facing = 1;
 jumpSpeed = 10;
 
+// Reconocimiento de TileMap -----------------------
+tileId = layer_tilemap_get_id("ts_terrain");
+
 // Ataque ---------------------
 weaponSlots = ["Slash", "Bullet"]
 current_weapon_index = 0;

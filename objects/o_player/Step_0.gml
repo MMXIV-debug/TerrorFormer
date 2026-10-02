@@ -27,33 +27,28 @@ if(!keyboard_check(ord("D")) and !keyboard_check(ord("A")))
 
 // 4.Movimiento ------------------
 	// Movimiento en X
-if(xSpeed != 0)
+var dist = abs(xSpeed);
+var dir = sign(xSpeed);
+while (dist > 0)
 {
-	if(xSpeed > 0)
-	{
-		move_contact_solid(0, xSpeed);
-	}
-	else
-	{
-		move_contact_solid(180, abs(xSpeed));
-	}
+	var step = min(1, dist);
+	if(!c_collision(x + dir * step, y)) x += dir * step;
+	else { xSpeed = 0; break; }
+	dist -= step;
 }
 	// Movimiento en Y
-if(ySpeed != 0)
+dist = abs(ySpeed);
+dir = sign(ySpeed);
+while (dist > 0)
 {
-	if(ySpeed > 0)
-	{
-		move_contact_solid(270, ySpeed);
-	}
-	else
-	{
-		move_contact_solid(90, abs(ySpeed));
-	}
+	var step = min(1, dist);
+	if (!c_collision(x, y + dir * step)) y += dir * step;
+	else { ySpeed = 0; break; }
+	dist -= step;
 }
 
-// 5.Checks ----------------------
-
-if (!place_free(x, y + 1))
+// 5. Checks ----------------------
+if (c_collision(x, y + 1))
 {
 	is_on_floor = 1;
 	ySpeed = 0;
@@ -62,9 +57,8 @@ else
 {
 	is_on_floor = 0;
 	ySpeed = min(ySpeed + grav, fallMax);
-	
 }
-if (ySpeed < 0 && !place_free(x, y - 1)) ySpeed = 0;
+if (ySpeed < 0 && c_collision(x, y - 1)) ySpeed = 0;
 
 
 // 6. Salto ----------------------------

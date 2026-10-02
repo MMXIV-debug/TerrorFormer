@@ -1,13 +1,13 @@
 {
   "$GMObject":"",
-  "%Name":"o_solid",
+  "%Name":"o_floor_1",
   "eventList":[],
   "managed":true,
-  "name":"o_solid",
+  "name":"o_floor_1",
   "overriddenProperties":[],
   "parent":{
-    "name":"Terrain",
-    "path":"folders/Objects/Terrain.yy",
+    "name":"Floor",
+    "path":"folders/Objects/Terrain/Old/Floor.yy",
   },
   "parentObjectId":null,
   "persistent":false,
@@ -28,8 +28,8 @@
   "resourceVersion":"2.0",
   "solid":true,
   "spriteId":{
-    "name":"s_solid",
-    "path":"sprites/s_solid/s_solid.yy",
+    "name":"s_floor",
+    "path":"sprites/s_floor/s_floor.yy",
   },
   "spriteMaskId":null,
   "visible":true,

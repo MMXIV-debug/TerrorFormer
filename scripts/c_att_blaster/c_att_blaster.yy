@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"c_att_blaster",
   "parent":{
-    "name":"Functions",
-    "path":"folders/Functions.yy",
+    "name":"att",
+    "path":"folders/Functions/att.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",
