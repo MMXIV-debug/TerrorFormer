@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"c_att_slash",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"c_att_slash",
+  "parent":{
+    "name":"Functions",
+    "path":"folders/Functions.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}
