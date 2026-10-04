@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"c_enemy_detect",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"c_enemy_detect",
+  "parent":{
+    "name":"DetecPlayer",
+    "path":"folders/Functions/Enemies/Detection/DetecPlayer.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

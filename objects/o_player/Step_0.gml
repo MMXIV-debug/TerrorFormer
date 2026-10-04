@@ -96,4 +96,19 @@ if (mouse_check_button_pressed(mb_left) && atkCooldown <= 0)
 	}
 }
 
+// 8. Invulnerabilidad y muerte ---------------------------
+if (invul_timer > 0) invul_timer--;
 
+if (hp <= 0)
+{
+	// Reaparece en el punto de respawn
+	x = spawn_x;
+	y = spawn_y;
+	xSpeed = 0;
+	ySpeed = 0;
+	hp = hpMax;
+	invul_timer = invulMax;
+
+	// La cámara salta directo al player (si no, viajaría deslizándose por todo el mapa)
+	if (instance_exists(o_camera)) o_camera.snapped = false;
+}

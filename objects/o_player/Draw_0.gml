@@ -21,4 +21,7 @@ if (!is_on_floor)
 
 mask_index = s_player;
 
+// Parpadeo mientras es invulnerable
+image_alpha = (invul_timer > 0 && (invul_timer div 4) mod 2 == 1) ? 0.3 : 1;
+
 draw_self();

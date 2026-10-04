@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"c_enemy_sim_jump",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"c_enemy_sim_jump",
+  "parent":{
+    "name":"Enemies",
+    "path":"folders/Functions/Enemies.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

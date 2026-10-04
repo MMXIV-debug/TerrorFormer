@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"c_solid_point",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"c_solid_point",
+  "parent":{
+    "name":"Enemies",
+    "path":"folders/Functions/Enemies.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

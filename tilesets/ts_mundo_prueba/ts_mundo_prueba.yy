@@ -1,7 +1,12 @@
 {
   "$GMTileSet":"v1",
   "%Name":"ts_mundo_prueba",
-  "autoTileSets":[],
+  "autoTileSets":[
+    {"$GMAutoTileSet":"","%Name":"base","closed_edge":false,"name":"base","resourceType":"GMAutoTileSet","resourceVersion":"2.0","tiles":[
+        98,220,224,0,164,0,0,0,102,0,0,0,0,0,0,0,96,0,0,0,36,0,0,0,100,0,0,0,160,0,0,0,0,0,34,0,38,0,162,0,158,
+        0,0,0,0,0,0,
+      ],},
+  ],
   "macroPageTiles":{
     "SerialiseHeight":14,
     "SerialiseWidth":18,
@@ -12,7 +17,7 @@
     "TileDataFormat":1,
   },
   "name":"ts_mundo_prueba",
-  "out_columns":30,
+  "out_columns":31,
   "out_tilehborder":2,
   "out_tilevborder":2,
   "parent":{
@@ -36,7 +41,7 @@
   "tilehsep":0,
   "tilevsep":0,
   "tileWidth":32,
-  "tilexoff":16,
-  "tileyoff":16,
-  "tile_count":900,
+  "tilexoff":0,
+  "tileyoff":0,
+  "tile_count":961,
 }
