@@ -125,9 +125,20 @@ switch (state)
 	            hSpeed = 0;
 	        }
 	        break;
+		// Caso de aturdido
+		case Enemy_STATE.STUN:
+			hSpeed = 0;          // no se mueve (la gravedad sigue funcionando)
+			stunTimer--;
+			if (stunTimer <= 0)
+			{
+				state = Enemy_STATE.CHASE;   // al recuperarse, te persigue
+				lostTimer = lostTimerMax;
+			}
+			break;
 }
 
 image_xscale = facing;
+image_blend = (state == Enemy_STATE.STUN) ? c_aqua : c_white;
 
 // 3. Movimiento en X ----------------
 var dist = abs(hSpeed);
@@ -152,7 +163,7 @@ while (dist > 0)
 }
 
 // 5. Matar al player de un toque (si no es invulnerable) ------------
-if (player_exists && o_player.invul_timer <= 0 && place_meeting(x, y, o_player))
+if (player_exists && state != Enemy_STATE.STUN && o_player.invul_timer <= 0 && place_meeting(x, y, o_player))
 {
 	o_player.hp = 0;
 }

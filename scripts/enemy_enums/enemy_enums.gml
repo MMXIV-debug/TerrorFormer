@@ -2,7 +2,8 @@
 enum Enemy_STATE
 {
 	IDLE,
-	CHASE
+	CHASE,
+	STUN
 }
 
 // Acciones durante el IDLE

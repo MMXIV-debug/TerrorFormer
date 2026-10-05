@@ -21,6 +21,9 @@ lostTimer = 0;
 // Estado
 state = Enemy_STATE.IDLE;
 
+// Aturdimiento
+stunTimer = 0;
+
 // Debug: muestra la zona de detección
 debug_zone = true;
 
