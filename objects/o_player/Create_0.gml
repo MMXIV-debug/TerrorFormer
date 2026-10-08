@@ -2,7 +2,6 @@
 hpMax = 10;
 hp = hpMax
 
-
 // Movimiento -----------------
 	// Variales en X --------------
 xSpeedMax = 5.5;
