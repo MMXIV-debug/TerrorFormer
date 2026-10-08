@@ -17,3 +17,4 @@ reiniciar_burbuja();
 
 // Para que no salgan todas a la vez, cada una empieza en un punto distinto de su recorrido
 y -= random(max_altura);
+visible = false;

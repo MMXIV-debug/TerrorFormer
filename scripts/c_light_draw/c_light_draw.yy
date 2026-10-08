@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"c_light_draw",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"c_light_draw",
+  "parent":{
+    "name":"Control",
+    "path":"folders/Functions/Control.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

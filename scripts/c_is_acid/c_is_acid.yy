@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"c_is_acid",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"c_is_acid",
+  "parent":{
+    "name":"Control",
+    "path":"folders/Functions/Control.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}
