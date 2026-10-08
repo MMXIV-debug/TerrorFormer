@@ -236,6 +236,8 @@ if (mouse_check_button_pressed(mb_left) && atkCooldown <= 0)
 // 8. Invulnerabilidad y muerte ---------------------------
 if (invul_timer > 0) invul_timer--;
 
+c_tile_damage();
+
 if (hp <= 0)
 {
 	// Reaparece en el punto de respawn

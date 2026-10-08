@@ -58,3 +58,7 @@ hook_dx = 0; hook_dy = 0; // dirección del gancho (vector de largo 1)
 hook_dist = 0; // cuánto recorrió
 anchor_x = 0; anchor_y = 0; // punto donde quedó enganchado
 rope_len = 0; // largo actual de la cuerda
+
+// Daño por tiles --------------
+dmgTileId = layer_tilemap_get_id("ts_dmg_obj");
+hitInvul = 60;      // frames de invulnerabilidad tras recibir daño// 

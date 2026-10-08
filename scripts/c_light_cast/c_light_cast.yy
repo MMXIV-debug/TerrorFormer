@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"c_light_cast",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"c_light_cast",
+  "parent":{
+    "name":"Control",
+    "path":"folders/Functions/Control.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

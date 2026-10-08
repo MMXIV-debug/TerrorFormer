@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"c_tile_hitbox",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"c_tile_hitbox",
+  "parent":{
+    "name":"Control",
+    "path":"folders/Functions/Control.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}
