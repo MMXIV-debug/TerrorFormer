@@ -63,7 +63,7 @@ var swinging = (grapple == 2 && !is_on_floor);
 // 1. Input ----------------------
 if (swinging)
 {
-	// [NUEVO] Colgado: A/D empujan para balancearse
+	// Colgado: A/D empujan para balancearse
 	if (keyboard_check(ord("D"))) xSpeed += gr_push;
 	if (keyboard_check(ord("A"))) xSpeed -= gr_push;
 }
@@ -224,11 +224,11 @@ if (mouse_check_button_pressed(mb_left) && atkCooldown <= 0)
 {
 	switch(weapon)
 	{
-		case "Slash":
-			c_att_slash();
-			break;
 		case "Bullet":
 			c_att_blaster()
+			break;
+		case "Slash":
+			c_att_slash();
 			break;
 	}
 }

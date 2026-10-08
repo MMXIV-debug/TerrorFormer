@@ -26,7 +26,7 @@ tileId = layer_tilemap_get_id("ts_terrain");
 all_collision = [tileId, o_floor_1, o_wall_1]
 
 // Ataque ---------------------
-weaponSlots = ["Slash", "Bullet"]
+weaponSlots = ["Bullet", "Slash"]
 current_weapon_index = 0;
 weapon = weaponSlots[current_weapon_index];
 atkCooldown = 12;

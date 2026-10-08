@@ -30,7 +30,7 @@ gpu_set_blendmode(bm_add);
 with (o_player)
 {
     var _f  = clamp(hp / hpMax, 0, 1);
-    var _r  = lerp(55, 100, _f);
+    var _r  = lerp(65, 180, _f);
     var _fl = 1 + sin(current_time * 0.006) * 0.05 + random_range(-0.02, 0.02);
     c_light_draw(x - _cx, y - 16 - _cy, _r * _fl, make_color_rgb(190, 200, 225), 0.85);
 }
