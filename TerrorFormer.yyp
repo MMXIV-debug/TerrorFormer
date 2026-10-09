@@ -74,6 +74,7 @@
     {"id":{"name":"o_enemy_body","path":"objects/o_enemy_body/o_enemy_body.yy",},},
     {"id":{"name":"o_enemy","path":"objects/o_enemy/o_enemy.yy",},},
     {"id":{"name":"o_floor_1","path":"objects/o_floor_1/o_floor_1.yy",},},
+    {"id":{"name":"o_game_start","path":"objects/o_game_start/o_game_start.yy",},},
     {"id":{"name":"o_light_ctrl","path":"objects/o_light_ctrl/o_light_ctrl.yy",},},
     {"id":{"name":"o_light_emergency","path":"objects/o_light_emergency/o_light_emergency.yy",},},
     {"id":{"name":"o_light_lamp","path":"objects/o_light_lamp/o_light_lamp.yy",},},
