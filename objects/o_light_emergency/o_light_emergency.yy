@@ -1,18 +1,21 @@
 {
   "$GMObject":"",
-  "%Name":"o_light_weak",
+  "%Name":"o_light_emergency",
   "eventList":[
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
   ],
   "managed":true,
-  "name":"o_light_weak",
+  "name":"o_light_emergency",
   "overriddenProperties":[],
   "parent":{
     "name":"DynamicL",
     "path":"folders/Objects/Control/Effects/DynamicL.yy",
   },
-  "parentObjectId":null,
+  "parentObjectId":{
+    "name":"o_light_weak",
+    "path":"objects/o_light_weak/o_light_weak.yy",
+  },
   "persistent":false,
   "physicsAngularDamping":0.1,
   "physicsDensity":0.5,

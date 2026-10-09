@@ -11,8 +11,8 @@
   "name":"o_light_ctrl",
   "overriddenProperties":[],
   "parent":{
-    "name":"Effects",
-    "path":"folders/Objects/Control/Effects.yy",
+    "name":"DynamicL",
+    "path":"folders/Objects/Control/Effects/DynamicL.yy",
   },
   "parentObjectId":null,
   "persistent":false,

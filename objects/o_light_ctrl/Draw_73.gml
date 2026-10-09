@@ -30,9 +30,12 @@ gpu_set_blendmode(bm_add);
 with (o_player)
 {
     var _f  = clamp(hp / hpMax, 0, 1);
-    var _r  = lerp(65, 180, _f);
+    var _r  = lerp(90, 200, _f);   // antes 65 → 180
     var _fl = 1 + sin(current_time * 0.006) * 0.05 + random_range(-0.02, 0.02);
-    c_light_draw(x - _cx, y - 16 - _cy, _r * _fl, make_color_rgb(190, 200, 225), 0.85);
+    c_light_draw(x - _cx, y - 16 - _cy, _r * _fl, make_color_rgb(190, 200, 225), 0.95);
+
+    // Halo pequeño: deja ver tu cuerpo y el suelo cercano aunque estés débil
+    c_light_draw(x - _cx, y - 16 - _cy, 38, make_color_rgb(150, 160, 185), 0.6);
 }
 
 // Luces débiles del escenario
@@ -89,5 +92,11 @@ for (var i = _x0; i <= _x1; i++)
 // Burbujas con brillo aditivo
 with (o_bubble)
     draw_sprite_ext(sprite_index, 0, x, y, image_xscale, image_yscale, 0, c_white, image_alpha);
+
+// Brillo propio de las luces de emergencia (se ve aunque no haya nada detrás)
+with (o_light_lamp)
+{
+    c_light_draw(x, y, 55 * flick, light_col, 0.35 * flick);
+}
 
 gpu_set_blendmode(bm_normal);

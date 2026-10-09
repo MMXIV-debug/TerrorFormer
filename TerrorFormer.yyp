@@ -75,6 +75,8 @@
     {"id":{"name":"o_enemy","path":"objects/o_enemy/o_enemy.yy",},},
     {"id":{"name":"o_floor_1","path":"objects/o_floor_1/o_floor_1.yy",},},
     {"id":{"name":"o_light_ctrl","path":"objects/o_light_ctrl/o_light_ctrl.yy",},},
+    {"id":{"name":"o_light_emergency","path":"objects/o_light_emergency/o_light_emergency.yy",},},
+    {"id":{"name":"o_light_lamp","path":"objects/o_light_lamp/o_light_lamp.yy",},},
     {"id":{"name":"o_light_weak","path":"objects/o_light_weak/o_light_weak.yy",},},
     {"id":{"name":"o_player","path":"objects/o_player/o_player.yy",},},
     {"id":{"name":"o_slash","path":"objects/o_slash/o_slash.yy",},},
