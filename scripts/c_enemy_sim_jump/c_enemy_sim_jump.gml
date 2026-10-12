@@ -17,6 +17,12 @@ function c_enemy_sim_jump(_dir, _vy0, _hs)
             vy = 0;
             if (airborne)
             {
+                // Si aterriza sobre pinchos o ácido, no es válido
+                if (c_enemy_hazard_at(sx, sy) || c_enemy_hazard_at(sx, sy - 8) || c_enemy_hazard_at(sx, sy - 16) || c_enemy_hazard_at(sx, sy + 1))
+                {
+                    return false;
+                }
+
                 // Aterrizó: ¿vale la pena?
                 var progress = (sx - x) * _dir;
                 var okProgress = (_vy0 >= 0) || (progress >= minProgress);
@@ -54,6 +60,9 @@ function c_enemy_sim_jump(_dir, _vy0, _hs)
             }
             d -= st2;
         }
+
+        // 3.5 Trayectoria atraviesa peligros
+        if (c_enemy_hazard_at(sx, sy) || c_enemy_hazard_at(sx, sy - 16)) return false;
 
         // 4. Cayó demasiado: no lo intenta
         if (sy - y > maxDrop) return false;

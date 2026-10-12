@@ -32,6 +32,12 @@ function c_tile_damage()
                 invul_timer = hitInvul;
                 ySpeed = -6;               // rebote hacia arriba
                 xSpeed = -facing * 3;      // empujón hacia atrás
+                if (grapple != 0)
+                {
+                    grapple = 0;
+                    gr_cd = gr_cooldown;
+                    gr_hang_timer = 0;
+                }
                 return;
             }
         }

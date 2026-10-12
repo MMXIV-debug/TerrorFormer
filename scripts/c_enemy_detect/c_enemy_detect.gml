@@ -2,6 +2,8 @@ function c_enemy_detect()
 {
 	if (!instance_exists(o_player)) return false;
 	
+	if (o_player.is_hidden) return false;
+	
 	// 1. Valida si el player esta en la zona de adelante
 	var z = c_enemy_zone();
 	if (collision_rectangle(z[0], z[1], z[2], z[3], o_player, false, true) == noone) return false;

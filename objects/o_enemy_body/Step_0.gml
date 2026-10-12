@@ -26,7 +26,9 @@ switch (state)
 	// Caso de idle
 	case Enemy_STATE.IDLE:
 		// ¿Ve al player? Entonces lo persigue
-        if (player_exists && c_enemy_detect())
+        if (chaseCooldown > 0) chaseCooldown--;
+
+        if (player_exists && chaseCooldown <= 0 && c_enemy_detect())
         {
             state = Enemy_STATE.CHASE;
             lostTimer = lostTimerMax;
@@ -61,8 +63,12 @@ switch (state)
                     var front = (facing == 1) ? bbox_right : bbox_left;
                     var wall_ahead = c_collision(x + facing * 2, y);
                     var ground_ahead = c_solid_point(front + facing * 2, y + 1);
+					var hazard_ahead = c_enemy_hazard_at(front + facing * 4, y)
+					                || c_enemy_hazard_at(front + facing * 4, y - 16)
+					                || c_enemy_hazard_at(front + facing * 4, y + 8)
+					                || c_enemy_hazard_at(front + facing * 4, y + 24);
 					
-					if (wall_ahead || !ground_ahead)
+					if (wall_ahead || !ground_ahead || hazard_ahead)
                     {
                         // Opciones posibles. "turn" (dar la vuelta) siempre vale.
                         var options = ["turn"];
@@ -70,7 +76,7 @@ switch (state)
                         if (c_enemy_sim_jump(facing, -jumpSpeed, jumpHSpeed))
                             array_push(options, "jump");
 
-                        if (!wall_ahead && c_enemy_sim_jump(facing, 0, walkSpeed))
+                        if (!wall_ahead && !hazard_ahead && c_enemy_sim_jump(facing, 0, walkSpeed))
                             array_push(options, "drop");
 
                         // Elige una al azar
@@ -89,6 +95,14 @@ switch (state)
                         }
 					}
 				}
+
+                // Salvaguarda: si está en el suelo y tiene un peligro al frente, darse la vuelta
+                var _chk_f = (facing == 1) ? bbox_right : bbox_left;
+                if (is_on_floor && (c_enemy_hazard_at(_chk_f + facing * 2, y) || c_enemy_hazard_at(_chk_f + facing * 2, y - 16) || c_enemy_hazard_at(_chk_f + facing * 2, y + 16)))
+                {
+                    facing *= -1;
+                    decisionCooldown = 20;
+                }
 				// Cansado de caminar: se queda quieto un rato (solo si está en el suelo)
                 if (idleTimer <= 0 && is_on_floor) c_enemy_set_wait();
                 break;
@@ -96,35 +110,47 @@ switch (state)
 		break;
 		// Caso de persecusion
 		case Enemy_STATE.CHASE:
-			if (!player_exists)
+			// Se rinde al instante si el player se esconde
+			if (!player_exists || o_player.is_hidden)
 			{
+				hangTimer = 0;
 				state = Enemy_STATE.IDLE;
 				c_enemy_set_wait();
 				break;
 			}
-			// Mirar siempre hacia el player
-	        var dirToPlayer = sign(o_player.x - x);
-	        if (dirToPlayer != 0) facing = dirToPlayer;
+			
+			// Se rinde si el player quedó demasiado lejos
+			if (point_distance(x, y, o_player.x, o_player.y) > chaseGiveUpDist)
+			{
+				hangTimer = 0;
+				state = Enemy_STATE.IDLE;
+				c_enemy_set_wait();
+				break;
+			}
 
-	        // Si lo sigue viendo, recarga el contador; si no, lo gasta
-	        if (c_enemy_detect()) lostTimer = lostTimerMax;
-	        else lostTimer--;
-			
-			// Si pasó mucho tiempo sin verlo, se rinde y se queda buscando
-	        if (lostTimer <= 0)
-	        {
+			// Mirar al player solo en el suelo (en el aire mantiene la dirección del salto)
+			if (is_on_floor)
+			{
+				var dirToPlayer = sign(o_player.x - x);
+				if (dirToPlayer != 0) facing = dirToPlayer;
+			}
+
+			// Player colgado del techo con el gancho (sin tocar el piso): cuenta el tiempo
+			var _hanging = (o_player.grapple == 2 && !o_player.is_on_floor && o_player.anchor_y < o_player.y - 32);
+			if (_hanging) hangTimer++;
+			else hangTimer = 0;
+
+			// Si aguanta colgado 10 segundos seguidos, lo pierde
+			if (hangTimer >= hangLimit)
+			{
+				hangTimer = 0;
 				state = Enemy_STATE.IDLE;
 				c_enemy_set_wait();
 				break;
 			}
-			
-			hSpeed = facing * chaseSpeed;
-			// No caerse por los bordes
-	        if (avoid_ledges && is_on_floor && !c_collision(x + facing * 16, y + 1))
-	        {
-	            hSpeed = 0;
-	        }
-	        break;
+
+			hSpeed = c_enemy_chase_move();
+			break;
 		// Caso de aturdido
 		case Enemy_STATE.STUN:
 			hSpeed = 0;          // no se mueve (la gravedad sigue funcionando)
@@ -138,7 +164,37 @@ switch (state)
 }
 
 image_xscale = facing;
-image_blend = (state == Enemy_STATE.STUN) ? c_aqua : c_white;
+
+// Tinte del cuerpo según estado
+if (state == Enemy_STATE.STUN)
+{
+    image_blend = make_color_rgb(120, 240, 255);
+}
+else if (state == Enemy_STATE.CHASE)
+{
+    image_blend = make_color_rgb(255, 175, 175);
+}
+else
+{
+    image_blend = c_white;
+}
+
+// Control de animación de caminata según velocidad y estado
+if (state == Enemy_STATE.STUN)
+{
+    image_speed = 0;
+}
+else if (abs(hSpeed) > 0.05)
+{
+    // Reproduce la animación de caminata; acelera al perseguir
+    image_speed = clamp(abs(hSpeed) / walkSpeed, 0.6, 2.2);
+}
+else
+{
+    // Detenido en espera: postura idle firme
+    image_speed = 0;
+    image_index = 0;
+}
 
 // 3. Movimiento en X ----------------
 var dist = abs(hSpeed);
@@ -163,7 +219,7 @@ while (dist > 0)
 }
 
 // 5. Matar al player de un toque (si no es invulnerable) ------------
-if (player_exists && state != Enemy_STATE.STUN && o_player.invul_timer <= 0 && place_meeting(x, y, o_player))
+if (player_exists && !o_player.is_hidden && state != Enemy_STATE.STUN && o_player.invul_timer <= 0 && place_meeting(x, y, o_player))
 {
 	o_player.hp = 0;
 }

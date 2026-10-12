@@ -1,9 +1,86 @@
-// 0. Cuerda (click derecho) --------------------------
+// 0. Esconderse (E) ---------------------------
+// -1. Flujo de muerte y respawn suave ------------------
+if (respawn_state == 1) // Fase 1: Fundido a negro y reposicionamiento
+{
+    xSpeed = 0;
+    ySpeed = 0;
+    grapple = 0;
+    fade_alpha = min(1, fade_alpha + 0.04);
+    if (fade_alpha >= 1)
+    {
+        x = spawn_x;
+        y = spawn_y;
+        while (c_collision(x, y) && y > 0)
+        {
+            y -= 1;
+        }
+        xSpeed = 0;
+        ySpeed = 0;
+        hp = hpMax;
+        invul_timer = invulMax;
+        is_alive = 1;
+        gr_hang_timer = 0;
+        gr_charges = gr_charges_max;
+
+        if (instance_exists(o_camera)) o_camera.snapped = false;
+
+        // Calmar a los enemigos para evitar spawn-kill
+        with (o_enemy_body)
+        {
+            state = Enemy_STATE.IDLE;
+            hangTimer = 0;
+            chaseCooldown = chaseCooldownMax;
+            c_enemy_set_wait();
+        }
+
+        respawn_state = 2; // Pasa a fase de fade in
+    }
+    exit;
+}
+else if (respawn_state == 2) // Fase 2: Fundido de regreso a la vista
+{
+    fade_alpha = max(0, fade_alpha - 0.04);
+    if (fade_alpha <= 0)
+    {
+        fade_alpha = 0;
+        respawn_state = 0;
+    }
+}
+
+if (is_hidden)
+{
+    xSpeed = 0;
+    ySpeed = 0;
+    grapple = 0;
+
+    if (keyboard_check_pressed(ord("E")))
+    {
+        is_hidden = false;
+        hide_spot = noone;
+    }
+    else exit;   // escondido: no se mueve, no dispara, no usa el gancho
+}
+else if (keyboard_check_pressed(ord("E")) && is_on_floor)
+{
+    var _spot = instance_nearest(x, y, o_hiding_spot);
+    if (_spot != noone && _spot.cerca)
+    {
+        is_hidden = true;
+        hide_spot = _spot;
+        x = _spot.x;
+        xSpeed = 0;
+        grapple = 0;
+        exit;
+    }
+}
+
+// 1. Cuerda (click derecho) --------------------------
 if (gr_cd > 0) gr_cd--;
 
 // Lanzar el gancho hacia el mouse
-if (mouse_check_button_pressed(mb_right) && grapple == 0 && gr_cd <= 0)
+if (mouse_check_button_pressed(mb_right) && grapple == 0 && gr_cd <= 0 && (is_on_floor || gr_charges > 0))
 {
+	if (!is_on_floor) gr_charges--;   // gasta carga solo si dispara en el aire
 	grapple = 1;
 	hook_x = x;
 	hook_y = y - gr_hand;
@@ -11,6 +88,7 @@ if (mouse_check_button_pressed(mb_right) && grapple == 0 && gr_cd <= 0)
 	hook_dx = lengthdir_x(1, ang);
 	hook_dy = lengthdir_y(1, ang);
 	hook_dist = 0;
+	gr_hang_timer = 0;
 }
 
 // Soltar el click: cancela el gancho o suelta la cuerda
@@ -18,39 +96,41 @@ if (grapple != 0 && !mouse_check_button(mb_right))
 {
 	grapple = 0;
 	gr_cd = gr_cooldown;
+	gr_hang_timer = 0;
 }
 
-// Gancho en vuelo: avanza de a 4 px buscando algo sólido
+// Gancho en vuelo: avanza hacia el destino buscando colisión sólida
 if (grapple == 1)
 {
-	repeat (gr_fly_speed div 4)
+	repeat (gr_fly_speed)
 	{
-		var hx = hook_x + hook_dx * 4;
-		var hy = hook_y + hook_dy * 4;
+		hook_x += hook_dx;
+		hook_y += hook_dy;
+		hook_dist += 1;
 
-		if (c_solid_point(hx, hy))
+		if (c_solid_point(hook_x, hook_y))
 		{
-			// Acercarse de a 1 px hasta tocar la superficie
-			repeat (4)
+			// Si recorrió al menos 16 px, se engancha con firmeza a la superficie
+			if (hook_dist >= 16)
 			{
-				if (c_solid_point(hook_x + hook_dx, hook_y + hook_dy)) break;
-				hook_x += hook_dx;
-				hook_y += hook_dy;
+				grapple = 2;
+				anchor_x = hook_x;
+				anchor_y = hook_y;
+				rope_len = max(gr_min_len, point_distance(x, y - gr_hand, anchor_x, anchor_y));
+				break;
 			}
-			grapple = 2;
-			anchor_x = hook_x;
-			anchor_y = hook_y;
-			rope_len = max(gr_min_len, point_distance(x, y - gr_hand, anchor_x, anchor_y));
-			break;
+			else
+			{
+				// Pared pegada al cuerpo: cancela sin crear ancla fantasma
+				grapple = 0;
+				gr_cd = gr_cooldown;
+				break;
+			}
 		}
-
-		hook_x = hx;
-		hook_y = hy;
-		hook_dist += 4;
 
 		if (hook_dist >= gr_max)
 		{
-			grapple = 0;   // no pegó con nada: se recoge
+			grapple = 0;   // límite de alcance alcanzado
 			gr_cd = gr_cooldown;
 			break;
 		}
@@ -60,7 +140,7 @@ if (grapple == 1)
 // ¿Está colgado en el aire?
 var swinging = (grapple == 2 && !is_on_floor);
 
-// 1. Input ----------------------
+// 2. Input ----------------------
 if (swinging)
 {
 	// Colgado: A/D empujan para balancearse
@@ -80,12 +160,12 @@ else
 	}
 }
 
-// 2. Facing --------------------------
+// 3. Facing --------------------------
 if (keyboard_check(ord("D")) && !keyboard_check(ord("A"))) facing = 1;
 if (keyboard_check(ord("A")) && !keyboard_check(ord("D"))) facing = -1;
 image_xscale = facing;
 
-// 3. Frenados (no se frena mientras se columpia en el aire)
+// 4. Frenados (no se frena mientras se columpia en el aire)
 if (!swinging)
 {
 	// Frenado si se apretan ambas a la vez
@@ -98,9 +178,25 @@ if (!swinging)
 	}
 }
 
-// 3.5 Cuerda: física del péndulo ---------------------
+// 4.5 Cuerda: física del péndulo ---------------------
 if (grapple == 2)
 {
+	// Fatiga al colgarse en el aire (no camper infinito en el techo)
+	if (!is_on_floor)
+	{
+		gr_hang_timer++;
+		if (gr_hang_timer >= gr_hang_max)
+		{
+			grapple = 0;
+			gr_cd = gr_cooldown * 2;
+			gr_hang_timer = 0;
+		}
+	}
+	else
+	{
+		gr_hang_timer = 0;
+	}
+
 	var rx = x - anchor_x;
 	var ry = (y - gr_hand) - anchor_y;
 	var rd = max(point_distance(0, 0, rx, ry), 0.001);
@@ -141,7 +237,7 @@ if (grapple == 2)
 	}
 }
 
-// 4.Movimiento ------------------
+// 5.Movimiento ------------------
 	// Movimiento en X
 var dist = abs(xSpeed);
 var dir = sign(xSpeed);
@@ -163,7 +259,7 @@ while (dist > 0)
 	dist -= step;
 }
 
-// 4.5 Cuerda: corregir la posición si se estiró ---------------
+// 5.5 Cuerda: corregir la posición si se estiró ---------------
 if (grapple == 2)
 {
 	var cx = x;
@@ -177,14 +273,25 @@ if (grapple == 2)
 		while (over > 0)
 		{
 			var s = min(1, over);
-			if (!c_collision(x + ux * s, y)) x += ux * s;
-			if (!c_collision(x, y + uy * s)) y += uy * s;
+			if (!c_collision(x + ux * s, y + uy * s))
+			{
+				x += ux * s;
+				y += uy * s;
+			}
+			else if (!c_collision(x + ux * s, y))
+			{
+				x += ux * s;
+			}
+			else if (!c_collision(x, y + uy * s))
+			{
+				y += uy * s;
+			}
 			over -= s;
 		}
 	}
 }
 
-// 5. Checks ----------------------
+// 6. Checks ----------------------
 if (c_collision(x, y + 1))
 {
 	is_on_floor = 1;
@@ -197,13 +304,31 @@ else
 }
 if (ySpeed < 0 && c_collision(x, y - 1)) ySpeed = 0;
 
+if (c_collision(x, y + 1))
+{
+	is_on_floor = 1;
+	ySpeed = 0;
+	gr_charges = gr_charges_max;   // recarga al pisar el suelo
+}
 
-// 6. Salto ----------------------------
 
-if (keyboard_check_pressed(vk_space) && is_on_floor) ySpeed = -jumpSpeed;
+// 7. Salto ----------------------------
+if (keyboard_check_pressed(vk_space))
+{
+	if (grapple == 2)
+	{
+		grapple = 0;
+		gr_cd = gr_cooldown;
+		ySpeed = -jumpSpeed * 0.9;
+	}
+	else if (is_on_floor)
+	{
+		ySpeed = -jumpSpeed;
+	}
+}
 if (keyboard_check_released(vk_space) and ySpeed < 0) ySpeed *= 0.5; // En caso de soltar antes de tiempo realiza un salto pequeño
 
-// 7.Ataques ---------------------
+// 8.Ataques ---------------------
 
 if (atkCooldown > 0) atkCooldown--;
 
@@ -222,10 +347,19 @@ if (changeWeapon)
 
 if (mouse_check_button_pressed(mb_left) && atkCooldown <= 0)
 {
+	// Disparar o golpear suelta el gancho inmediatamente (manos ocupadas / retroceso)
+	if (grapple != 0)
+	{
+		grapple = 0;
+		gr_cd = gr_cooldown;
+		gr_hang_timer = 0;
+	}
+
 	switch(weapon)
 	{
 		case "Bullet":
-			c_att_blaster()
+			c_att_blaster();
+			muzzle_flash_timer = 4;
 			break;
 		case "Slash":
 			c_att_slash();
@@ -233,22 +367,16 @@ if (mouse_check_button_pressed(mb_left) && atkCooldown <= 0)
 	}
 }
 
-// 8. Invulnerabilidad y muerte ---------------------------
+// 9. Invulnerabilidad y muerte ---------------------------
 if (invul_timer > 0) invul_timer--;
 
 c_tile_damage();
 
-if (hp <= 0)
+if (hp <= 0 && respawn_state == 0)
 {
-	// Reaparece en el punto de respawn
-	x = spawn_x;
-	y = spawn_y;
+	respawn_state = 1;
+	grapple = 0;
+	is_alive = 0;
 	xSpeed = 0;
 	ySpeed = 0;
-	hp = hpMax;
-	invul_timer = invulMax;
-	grapple = 0;   // Suelta la cuerda al morir
-
-	// La cámara salta directo al player (si no, viajaría deslizándose por todo el mapa)
-	if (instance_exists(o_camera)) o_camera.snapped = false;
 }
