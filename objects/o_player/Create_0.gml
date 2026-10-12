@@ -17,6 +17,7 @@ grav = 0.5;
 is_on_floor = 0; // Variable de control de si esta en el suelo
 facing = 1;
 jumpSpeed = 10;
+is_alive = 1;
 
 
 gpu_set_texfilter(false);
@@ -61,3 +62,7 @@ rope_len = 0; // largo actual de la cuerda
 // Daño por tiles --------------
 dmgTileId = layer_tilemap_get_id("ts_dmg_obj");
 hitInvul = 60;      // frames de invulnerabilidad tras recibir daño// 
+
+// Hiding spot ---------------
+is_hidden = false;
+hide_spot = noone;

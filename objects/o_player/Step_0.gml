@@ -1,4 +1,32 @@
-// 0. Cuerda (click derecho) --------------------------
+// 0. Esconderse (E) ---------------------------
+if (is_hidden)
+{
+    xSpeed = 0;
+    ySpeed = 0;
+    grapple = 0;
+
+    if (keyboard_check_pressed(ord("E")))
+    {
+        is_hidden = false;
+        hide_spot = noone;
+    }
+    else exit;   // escondido: no se mueve, no dispara, no usa el gancho
+}
+else if (keyboard_check_pressed(ord("E")) && is_on_floor)
+{
+    var _spot = instance_nearest(x, y, o_hiding_spot);
+    if (_spot != noone && _spot.cerca)
+    {
+        is_hidden = true;
+        hide_spot = _spot;
+        x = _spot.x;
+        xSpeed = 0;
+        grapple = 0;
+        exit;
+    }
+}
+
+// 1. Cuerda (click derecho) --------------------------
 if (gr_cd > 0) gr_cd--;
 
 // Lanzar el gancho hacia el mouse
@@ -60,7 +88,7 @@ if (grapple == 1)
 // ¿Está colgado en el aire?
 var swinging = (grapple == 2 && !is_on_floor);
 
-// 1. Input ----------------------
+// 2. Input ----------------------
 if (swinging)
 {
 	// Colgado: A/D empujan para balancearse
@@ -80,12 +108,12 @@ else
 	}
 }
 
-// 2. Facing --------------------------
+// 3. Facing --------------------------
 if (keyboard_check(ord("D")) && !keyboard_check(ord("A"))) facing = 1;
 if (keyboard_check(ord("A")) && !keyboard_check(ord("D"))) facing = -1;
 image_xscale = facing;
 
-// 3. Frenados (no se frena mientras se columpia en el aire)
+// 4. Frenados (no se frena mientras se columpia en el aire)
 if (!swinging)
 {
 	// Frenado si se apretan ambas a la vez
@@ -98,7 +126,7 @@ if (!swinging)
 	}
 }
 
-// 3.5 Cuerda: física del péndulo ---------------------
+// 4.5 Cuerda: física del péndulo ---------------------
 if (grapple == 2)
 {
 	var rx = x - anchor_x;
@@ -141,7 +169,7 @@ if (grapple == 2)
 	}
 }
 
-// 4.Movimiento ------------------
+// 5.Movimiento ------------------
 	// Movimiento en X
 var dist = abs(xSpeed);
 var dir = sign(xSpeed);
@@ -163,7 +191,7 @@ while (dist > 0)
 	dist -= step;
 }
 
-// 4.5 Cuerda: corregir la posición si se estiró ---------------
+// 5.5 Cuerda: corregir la posición si se estiró ---------------
 if (grapple == 2)
 {
 	var cx = x;
@@ -184,7 +212,7 @@ if (grapple == 2)
 	}
 }
 
-// 5. Checks ----------------------
+// 6. Checks ----------------------
 if (c_collision(x, y + 1))
 {
 	is_on_floor = 1;
@@ -198,12 +226,12 @@ else
 if (ySpeed < 0 && c_collision(x, y - 1)) ySpeed = 0;
 
 
-// 6. Salto ----------------------------
+// 7. Salto ----------------------------
 
 if (keyboard_check_pressed(vk_space) && is_on_floor) ySpeed = -jumpSpeed;
 if (keyboard_check_released(vk_space) and ySpeed < 0) ySpeed *= 0.5; // En caso de soltar antes de tiempo realiza un salto pequeño
 
-// 7.Ataques ---------------------
+// 8.Ataques ---------------------
 
 if (atkCooldown > 0) atkCooldown--;
 
@@ -233,7 +261,7 @@ if (mouse_check_button_pressed(mb_left) && atkCooldown <= 0)
 	}
 }
 
-// 8. Invulnerabilidad y muerte ---------------------------
+// 9. Invulnerabilidad y muerte ---------------------------
 if (invul_timer > 0) invul_timer--;
 
 c_tile_damage();
@@ -248,6 +276,7 @@ if (hp <= 0)
 	hp = hpMax;
 	invul_timer = invulMax;
 	grapple = 0;   // Suelta la cuerda al morir
+	is_alive = 0;
 
 	// La cámara salta directo al player (si no, viajaría deslizándose por todo el mapa)
 	if (instance_exists(o_camera)) o_camera.snapped = false;

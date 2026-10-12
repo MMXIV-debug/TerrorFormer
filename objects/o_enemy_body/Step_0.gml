@@ -26,7 +26,9 @@ switch (state)
 	// Caso de idle
 	case Enemy_STATE.IDLE:
 		// ¿Ve al player? Entonces lo persigue
-        if (player_exists && c_enemy_detect())
+        if (chaseCooldown > 0) chaseCooldown--;
+
+        if (player_exists && chaseCooldown <= 0 && c_enemy_detect())
         {
             state = Enemy_STATE.CHASE;
             lostTimer = lostTimerMax;
@@ -96,35 +98,47 @@ switch (state)
 		break;
 		// Caso de persecusion
 		case Enemy_STATE.CHASE:
-			if (!player_exists)
+			// Se rinde al instante si el player se esconde
+			if (!player_exists || o_player.is_hidden)
 			{
+				hangTimer = 0;
 				state = Enemy_STATE.IDLE;
 				c_enemy_set_wait();
 				break;
 			}
-			// Mirar siempre hacia el player
-	        var dirToPlayer = sign(o_player.x - x);
-	        if (dirToPlayer != 0) facing = dirToPlayer;
+			
+			// Se rinde si el player quedó demasiado lejos
+			if (point_distance(x, y, o_player.x, o_player.y) > chaseGiveUpDist)
+			{
+				hangTimer = 0;
+				state = Enemy_STATE.IDLE;
+				c_enemy_set_wait();
+				break;
+			}
 
-	        // Si lo sigue viendo, recarga el contador; si no, lo gasta
-	        if (c_enemy_detect()) lostTimer = lostTimerMax;
-	        else lostTimer--;
-			
-			// Si pasó mucho tiempo sin verlo, se rinde y se queda buscando
-	        if (lostTimer <= 0)
-	        {
+			// Mirar al player solo en el suelo (en el aire mantiene la dirección del salto)
+			if (is_on_floor)
+			{
+				var dirToPlayer = sign(o_player.x - x);
+				if (dirToPlayer != 0) facing = dirToPlayer;
+			}
+
+			// Player colgado del techo con el gancho (sin tocar el piso): cuenta el tiempo
+			var _hanging = (o_player.grapple == 2 && !o_player.is_on_floor && o_player.anchor_y < o_player.y - 32);
+			if (_hanging) hangTimer++;
+			else hangTimer = 0;
+
+			// Si aguanta colgado 10 segundos seguidos, lo pierde
+			if (hangTimer >= hangLimit)
+			{
+				hangTimer = 0;
 				state = Enemy_STATE.IDLE;
 				c_enemy_set_wait();
 				break;
 			}
-			
-			hSpeed = facing * chaseSpeed;
-			// No caerse por los bordes
-	        if (avoid_ledges && is_on_floor && !c_collision(x + facing * 16, y + 1))
-	        {
-	            hSpeed = 0;
-	        }
-	        break;
+
+			hSpeed = c_enemy_chase_move();
+			break;
 		// Caso de aturdido
 		case Enemy_STATE.STUN:
 			hSpeed = 0;          // no se mueve (la gravedad sigue funcionando)
@@ -163,7 +177,7 @@ while (dist > 0)
 }
 
 // 5. Matar al player de un toque (si no es invulnerable) ------------
-if (player_exists && state != Enemy_STATE.STUN && o_player.invul_timer <= 0 && place_meeting(x, y, o_player))
+if (player_exists && !o_player.is_hidden && state != Enemy_STATE.STUN && o_player.invul_timer <= 0 && place_meeting(x, y, o_player))
 {
 	o_player.hp = 0;
 }
