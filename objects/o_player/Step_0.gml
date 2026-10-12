@@ -359,7 +359,6 @@ if (mouse_check_button_pressed(mb_left) && atkCooldown <= 0)
 	{
 		case "Bullet":
 			c_att_blaster();
-			muzzle_flash_timer = 4;
 			break;
 		case "Slash":
 			c_att_slash();
