@@ -1,5 +1,5 @@
 light_surf = -1;
-ambient = make_color_rgb(18, 24, 34); // Ambiente ligeramente más oscuro para mayor suspenso
+ambient = make_color_rgb(45, 70, 80); // Ambiente ligeramente más oscuro para mayor suspenso
 dmg_tm = layer_tilemap_get_id("ts_dmg_obj");
 terrain_tm = layer_tilemap_get_id("ts_terrain");
 t = 0;

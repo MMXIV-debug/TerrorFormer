@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"c_flip",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"c_flip",
+  "parent":{
+    "name":"Movement",
+    "path":"folders/Functions/Enemies/Movement.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

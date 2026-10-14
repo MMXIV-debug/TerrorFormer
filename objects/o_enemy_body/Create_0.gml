@@ -56,10 +56,10 @@ chaseJumpTimer = 0; // pausa entre saltos hacia el player
 
 // Perder al player colgado del techo
 hangTimer = 0;
-hangLimit = room_speed * 10;   // 10 segundos
-chaseGiveUpDist = 900;   // si el player queda más lejos que esto (px), pierde la persecución
-chaseCooldown = 0;                    // pausa antes de poder volver a detectar al player
-chaseCooldownMax = room_speed * 3;    // 3 segundos
+hangLimit = room_speed * 10; // 10 segundos
+chaseGiveUpDist = 900; // si el player queda más lejos que esto (px), pierde la persecución
+chaseCooldown = 0; // pausa antes de poder volver a detectar al player
+chaseCooldownMax = room_speed * 3; // 3 segundos
 
 
 
