@@ -1,3 +1,7 @@
+// Variables globales ----------------
+
+global.previous_room = 0;
+
 // Particulas  disparos --------------
 
 global.p_shot = part_type_create();

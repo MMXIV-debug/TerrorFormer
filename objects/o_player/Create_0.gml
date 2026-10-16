@@ -66,9 +66,6 @@ rope_len = 0; // largo actual de la cuerda
 gr_charges_max = 3;               // disparos disponibles en el aire
 gr_charges = gr_charges_max;
 
-// Efectos de combate e iluminación
-muzzle_flash_timer = 0; // destello breve al disparar
-
 // Daño por tiles --------------
 dmgTileId = layer_tilemap_get_id("ts_dmg_obj");
 hitInvul = 60;      // frames de invulnerabilidad tras recibir daño// 

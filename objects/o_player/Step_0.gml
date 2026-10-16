@@ -1,4 +1,3 @@
-// 0. Esconderse (E) ---------------------------
 // -1. Flujo de muerte y respawn suave ------------------
 if (respawn_state == 1) // Fase 1: Fundido a negro y reposicionamiento
 {
@@ -47,6 +46,7 @@ else if (respawn_state == 2) // Fase 2: Fundido de regreso a la vista
     }
 }
 
+// 0. Esconderse (E) ---------------------------
 if (is_hidden)
 {
     xSpeed = 0;

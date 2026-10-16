@@ -10,8 +10,8 @@
   "name":"o_checkpoint",
   "overriddenProperties":[],
   "parent":{
-    "name":"Terrain",
-    "path":"folders/Objects/Terrain.yy",
+    "name":"Utility",
+    "path":"folders/Objects/Terrain/Utility.yy",
   },
   "parentObjectId":null,
   "persistent":false,
