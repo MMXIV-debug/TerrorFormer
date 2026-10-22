@@ -18,6 +18,7 @@ is_on_floor = 0; // Variable de control de si esta en el suelo
 facing = 1;
 jumpSpeed = 10;
 is_alive = 1;
+crouch = 0;
 
 
 gpu_set_texfilter(false);
@@ -73,3 +74,7 @@ hitInvul = 60;      // frames de invulnerabilidad tras recibir daño//
 // Hiding spot ---------------
 is_hidden = false;
 hide_spot = noone;
+
+// Plataformas nube -------------
+cloudId = layer_tilemap_get_id("ts_cloud");
+cloud_drop = 0;   // frames que las nubes se ignoran al bajar con S + Espacio

@@ -254,7 +254,7 @@ dir = sign(ySpeed);
 while (dist > 0)
 {
 	var step = min(1, dist);
-	if (!c_collision(x, y + dir * step)) y += dir * step;
+	if (!c_collision(x, y + dir * step) && !c_cloud(x, y + dir * step)) y += dir * step;
 	else { ySpeed = 0; break; }
 	dist -= step;
 }
@@ -292,7 +292,9 @@ if (grapple == 2)
 }
 
 // 6. Checks ----------------------
-if (c_collision(x, y + 1))
+if (cloud_drop > 0) cloud_drop--;
+	
+if (c_collision(x, y + 1) || c_cloud(x, y + 1))
 {
 	is_on_floor = 1;
 	ySpeed = 0;
@@ -304,7 +306,7 @@ else
 }
 if (ySpeed < 0 && c_collision(x, y - 1)) ySpeed = 0;
 
-if (c_collision(x, y + 1))
+if (c_collision(x, y + 1) || c_cloud(x, y + 1))
 {
 	is_on_floor = 1;
 	ySpeed = 0;
@@ -320,6 +322,12 @@ if (keyboard_check_pressed(vk_space))
 		grapple = 0;
 		gr_cd = gr_cooldown;
 		ySpeed = -jumpSpeed * 0.9;
+	}
+	// Agachado + salto sobre una nube: caer a través
+	else if (is_on_floor && keyboard_check(ord("S")) && !c_collision(x, y + 1) && c_cloud(x, y + 1))
+	{
+		cloud_drop = 8;
+		y += 1;
 	}
 	else if (is_on_floor)
 	{
@@ -378,4 +386,21 @@ if (hp <= 0 && respawn_state == 0)
 	is_alive = 0;
 	xSpeed = 0;
 	ySpeed = 0;
+}
+// 10. Crouch
+if (keyboard_check(ord("S")))
+{
+	if (is_on_floor)
+	{
+		crouch = 1;
+		xSpeed = 0;
+	}
+	else
+	{
+		crouch = 0;
+	}
+}
+else
+{
+	crouch = 0;
 }
